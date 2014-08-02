@@ -5,7 +5,7 @@ Usage:
 2. Start the game and enter a world or server.  
 3. Open your inventory and click the Options button in the lower left corner.  
 4. Click Tools, Data Dumps and then the Dump button on the Biomes row.  
-5. Download and run [the](https://dl.dropboxusercontent.com/u/27836116/InGameBees.jar) tool.  
+5. Download and run [the tool](http://goo.gl/X6cpgY).  
 6. Click Select Minecraft Folder and use the selector dialog to select your current minecraft folder.  
 7. Back in game, type "/igi reload" in chat.
 
