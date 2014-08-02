@@ -22,14 +22,15 @@ public class Main extends JFrame implements ActionListener {
 		mainPanel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
 		usePercent = false;
 
-		JRadioButton percentButton = new JRadioButton(percentsString);
 		JRadioButton levelButton = new JRadioButton(levelsString);
+		levelButton.setSelected(true);
+		JRadioButton percentButton = new JRadioButton(percentsString);
 
 		ButtonGroup buttonGroup = new ButtonGroup();
-		buttonGroup.add(percentButton);
 		buttonGroup.add(levelButton);
-		mainPanel.add(percentButton);
+		buttonGroup.add(percentButton);
 		mainPanel.add(levelButton);
+		mainPanel.add(percentButton);
 		percentButton.addActionListener(this);
 		levelButton.addActionListener(this);
 
