@@ -8,22 +8,41 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.util.ArrayList;
 
-public class Main extends JFrame {
+public class Main extends JFrame implements ActionListener {
+	public boolean usePercent;
+	public static String percentsString = "Display Percents";
+	public static String levelsString = "Display Levels";
+	public static String folderString = "Select Minecraft Folder";
 
 	public Main() {
 		this.setTitle("InGameBees"); // Set the window title
-		this.setPreferredSize(new Dimension(400, 400)); // and the initial size
-		//this.setLayout(new BoxLayout(null, BoxLayout.Y_AXIS));
 
-		JButton selectFolderButton = new JButton("Select Folder");
+		JPanel mainPanel = new JPanel();
+		mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+		mainPanel.setAlignmentX(JPanel.CENTER_ALIGNMENT);
+		usePercent = false;
+
+		JRadioButton percentButton = new JRadioButton(percentsString);
+		JRadioButton levelButton = new JRadioButton(levelsString);
+
+		ButtonGroup buttonGroup = new ButtonGroup();
+		buttonGroup.add(percentButton);
+		buttonGroup.add(levelButton);
+		mainPanel.add(percentButton);
+		mainPanel.add(levelButton);
+		percentButton.addActionListener(this);
+		levelButton.addActionListener(this);
+
+		JButton selectFolderButton = new JButton(folderString);
 		selectFolderButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				runOperation();
 			}
 		});
-		this.add(selectFolderButton);
+		mainPanel.add(selectFolderButton);
 
+		this.add(mainPanel);
 		pack();
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setVisible(true);
@@ -71,11 +90,7 @@ public class Main extends JFrame {
 				}
 				for(ArrayList<String> biome : biomes) {
 					bldr.append("				<str>");
-					bldr.append("Temp: ");
-					bldr.append(Math.round(Float.parseFloat(biome.get(1)) * 100));
-					bldr.append("%  Humd: ");
-					bldr.append(Math.round(Float.parseFloat(biome.get(2)) * 100));
-					bldr.append("%");
+					bldr.append(tempHumdString(Math.round(Float.parseFloat(biome.get(1)) * 100), Math.round(Float.parseFloat(biome.get(2)) * 100)));
 					bldr.append("</str>\n");
 				}
 				bldr.append("			</operation>\n		</line>\n	</lines>\n</config>");
@@ -85,6 +100,30 @@ public class Main extends JFrame {
 				System.out.println("PING5");
 			}
 		}
+	}
+
+	public String tempHumdString(int temp, int humd) {
+		StringBuilder bldr = new StringBuilder();
+		if(usePercent) {
+			bldr.append("Temp: ");
+			bldr.append(temp);
+			bldr.append("% Humd: ");
+			bldr.append(humd);
+			bldr.append("%");
+		} else {
+			if(temp < 5) bldr.append("Icy");
+			else if(temp < 20) bldr.append("Cold");
+			else if(temp < 95) bldr.append("Normal");
+			else if(temp < 200) bldr.append("Warm");
+			else bldr.append("Hot");
+
+			bldr.append(" / ");
+
+			if(humd < 10) bldr.append("Arid");
+			else if(humd < 90) bldr.append("Normal");
+			else bldr.append("Damp");
+		}
+		return bldr.toString();
 	}
 
 	public static boolean writeFile(String string, File location) {
@@ -127,5 +166,11 @@ public class Main extends JFrame {
 
 	public static void main(String[] args) {
 		new Main();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getActionCommand().equals(percentsString)) usePercent = true;
+		else usePercent = false;
 	}
 }
