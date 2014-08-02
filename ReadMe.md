@@ -9,4 +9,5 @@ Usage:
 6. Click Select Minecraft Folder and use the selector dialog to select your current minecraft folder.  
 7. Back in game, type "/igi reload" in chat.
 
-Now you should see the [climate](http://ftbwiki.org/Climate) and [humidity](http://ftbwiki.org/Humidity) levels of your current biome.
+Now you should see the [climate](http://ftbwiki.org/Climate) and [humidity](http://ftbwiki.org/Humidity) levels of your current biome.  
+You can select Display Percents to display the percentage temperatur and humidity instead of the levels.
