@@ -12,5 +12,7 @@ Usage:
 Now you should see the [climate](http://ftbwiki.org/Climate) and [humidity](http://ftbwiki.org/Humidity) levels of your current biome.  
 You can select Display Percents to display the percentage temperatur and humidity instead of the levels.
 
-![Image of tool](http://s30.postimg.org/ezzhidzn5/screenshot_32.png)
-![Image of result](http://s30.postimg.org/4efm6dtbl/screenshot_33.png)
+Image of tool  
+![](http://s30.postimg.org/ezzhidzn5/screenshot_32.png)  
+Image of result  
+![](http://s30.postimg.org/4efm6dtbl/screenshot_33.png)
