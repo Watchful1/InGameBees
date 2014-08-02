@@ -56,14 +56,18 @@ public class Main extends JFrame implements ActionListener {
 		File minecraftFolder;
 		if (returnVal == JFileChooser.APPROVE_OPTION) minecraftFolder = fileChooser.getSelectedFile();
 		else return;
-		System.out.println("PING1");
 
 		if(minecraftFolder.exists() && minecraftFolder.isDirectory() &&
 				(minecraftFolder.getName().equals("minecraft") || minecraftFolder.getName().equals(".minecraft"))) {
 			File dump = new File(minecraftFolder + File.separator + "dumps/biome.csv");
 			if(dump.exists()) {
-				System.out.println("PING2");
-				String csv = readFile(dump);
+				String csv = null;
+				try {
+					csv = readFile(dump);
+				} catch (IOException e) {
+					JOptionPane.showMessageDialog(this, "Found the biome data, but couldn't read it");
+					return;
+				}
 				ArrayList<ArrayList<String>> biomes = new ArrayList<ArrayList<String>>();
 				boolean first = true;
 				for(String line : csv.split("\n")) {
@@ -76,10 +80,12 @@ public class Main extends JFrame implements ActionListener {
 					temp.add(items[0]);
 					temp.add(items[2]);
 					temp.add(items[3]);
-					temp.add(items[7]);
+					int firstQuote = line.indexOf("\"");
+					int secondQuote = line.indexOf("\"", firstQuote + 1);
+					if(firstQuote == -1 || secondQuote == -1) temp.add("");
+					else temp.add(line.substring(firstQuote + 1, secondQuote - 1));
 					biomes.add(temp);
 				}
-				System.out.println("PING3");
 				StringBuilder bldr = new StringBuilder();
 				bldr.append("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<config>\n" +
 						"	<lines at=\"topleft\">\n		<line>\n			<operation>\n" +
@@ -91,19 +97,26 @@ public class Main extends JFrame implements ActionListener {
 				}
 				for(ArrayList<String> biome : biomes) {
 					bldr.append("				<str>");
-					bldr.append(tempHumdString(Math.round(Float.parseFloat(biome.get(1)) * 100), Math.round(Float.parseFloat(biome.get(2)) * 100)));
+					bldr.append(tempHumdString(Math.round(Float.parseFloat(biome.get(1)) * 100), Math.round(Float.parseFloat(biome.get(2)) * 100), biome.get(3)));
 					bldr.append("</str>\n");
 				}
 				bldr.append("			</operation>\n		</line>\n	</lines>\n</config>");
-				System.out.println("PING4");
 				File config = new File(minecraftFolder+File.separator+"config/InGameInfo.xml");
-				writeFile(bldr.toString(), config);
-				System.out.println("PING5");
+				try {
+					writeFile(bldr.toString(), config);
+				} catch (Exception e) {
+					JOptionPane.showMessageDialog(this, "Could not write out the xml file");
+					return;
+				}
+			} else {
+				JOptionPane.showMessageDialog(this, "Couldn't find the biome data,\ndid you use NEI to dump it?");
 			}
+		} else {
+			JOptionPane.showMessageDialog(this, "That doesn't look like a minecraft folder");
 		}
 	}
 
-	public String tempHumdString(int temp, int humd) {
+	public String tempHumdString(int temp, int humd, String attribs) {
 		StringBuilder bldr = new StringBuilder();
 		if(usePercent) {
 			bldr.append("Temp: ");
@@ -116,7 +129,10 @@ public class Main extends JFrame implements ActionListener {
 			else if(temp < 20) bldr.append("Cold");
 			else if(temp < 95) bldr.append("Normal");
 			else if(temp < 200) bldr.append("Warm");
-			else bldr.append("Hot");
+			else {
+				if(attribs.toLowerCase().contains("nether")) bldr.append("Hellish");
+				else bldr.append("Hot");
+			}
 
 			bldr.append(" / ");
 
@@ -127,7 +143,7 @@ public class Main extends JFrame implements ActionListener {
 		return bldr.toString();
 	}
 
-	public static boolean writeFile(String string, File location) {
+	public static void writeFile(String string, File location) throws Exception {
 		if(!location.exists()) location.getParentFile().mkdirs();
 		try{
 			// Create file
@@ -137,13 +153,11 @@ public class Main extends JFrame implements ActionListener {
 			//Close the output stream
 			out.close();
 		} catch (Exception e){//Catch exception if any
-			System.err.println("Error: " + e.getMessage());
-			return false;
+			throw e;
 		}
-		return true;
 	}
 
-	public static String readFile(File location) {
+	public static String readFile(File location) throws IOException {
 		if(!location.exists()) return null;
 		BufferedReader br = null;
 		StringBuilder bldr = new StringBuilder();
@@ -154,12 +168,12 @@ public class Main extends JFrame implements ActionListener {
 				bldr.append(sCurrentLine+"\n");
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw e;
 		} finally {
 			try {
 				if (br != null)br.close();
 			} catch (IOException ex) {
-				ex.printStackTrace();
+				throw ex;
 			}
 		}
 		return bldr.toString();
