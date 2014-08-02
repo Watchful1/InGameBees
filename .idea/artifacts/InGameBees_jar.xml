@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="InGameBees:jar">
-    <output-path>$PROJECT_DIR$/../../../Dropbox/Public</output-path>
-    <root id="archive" name="InGameBees.jar">
-      <element id="module-output" name="InGameBees" />
-    </root>
-  </artifact>
-</component>
