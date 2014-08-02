@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class Main extends JFrame implements ActionListener {
 	public boolean usePercent;
-	public static String percentsString = "Display Percents ";
+	public static String percentsString = "Display Percents";
 	public static String levelsString = "Display Levels";
 	public static String folderString = "Select Minecraft Folder";
 
